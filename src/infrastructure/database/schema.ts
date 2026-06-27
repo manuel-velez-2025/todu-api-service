@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, integer, timestamp, text, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, integer, timestamp, text } from 'drizzle-orm/pg-core';
 
 export const usuarios = pgTable('users', {
   id: varchar('id', { length: 36 }).primaryKey(),
@@ -13,7 +13,8 @@ export const tareas = pgTable('tasks', {
   id: varchar('id', { length: 36 }).primaryKey(),
   usuarioId: varchar('user_id', { length: 36 }),
   titulo: varchar('title', { length: 255 }).notNull(),
-  xpValor: integer('xp_value').default(10),
+  descripcion: text('description'),
+  xpValor: integer('xp_value').default(0),
   estado: varchar('status', { length: 20 }).default('pending'),
   urlEvidencia: varchar('proof_url', { length: 255 }),
   fechaCreacion: timestamp('created_at').defaultNow(),
