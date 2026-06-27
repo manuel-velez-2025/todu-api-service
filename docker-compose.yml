@@ -1,25 +1,16 @@
-version: '3.8'
-
 services:
   db:
-    image: mysql:8.0.36
-    container_name: todu_mysql
-    restart: unless-stopped
+    image: postgres:15
+    container_name: todu_postgres
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root_password_seguro
-      MYSQL_DATABASE: todu_db
-      MYSQL_USER: todu_admin
-      MYSQL_PASSWORD: admin_password_seguro
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: contraseña
+      POSTGRES_DB: todu_db
     ports:
-      - "3307:3306"
+      - '5432:5432'
     volumes:
-      - todu_mysql_data:/var/lib/mysql
-    networks:
-      - todu_network
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
-  todu_mysql_data:
-
-networks:
-  todu_network:
-    driver: bridge
+  pgdata:

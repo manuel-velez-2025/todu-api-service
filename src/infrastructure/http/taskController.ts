@@ -1,14 +1,21 @@
-// src/infrastructure/http/taskController.ts
 import { Request, Response } from 'express';
 import { TaskService } from '../../application/taskService';
 
-const taskService = new TaskService();
+const servicioTareas = new TaskService();
 
-export const createTaskController = async (req: Request, res: Response) => {
+export const crearTareaControlador = async (req: Request, res: Response) => {
   try {
-    const task = await taskService.createTask(req.body);
-    res.status(201).json(task); // 201 Created es el código HTTP correcto
+    const datosTarea = req.body;
+    const tareaCreada = await servicioTareas.createTask(datosTarea);
+    
+    res.status(201).json({
+      mensaje: 'Tarea creada con éxito',
+      tarea: tareaCreada
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Error al crear la tarea' });
+    console.error('Error en controlador:', error);
+    res.status(500).json({ 
+      mensaje: 'Error interno al procesar la tarea' 
+    });
   }
 };

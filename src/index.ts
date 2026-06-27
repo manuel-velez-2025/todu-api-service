@@ -1,22 +1,11 @@
-import express, { Request, Response } from 'express';
-import cors from 'cors';
+import express from 'express';
+import rutas from './infrastructure/http/routes';
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+app.use(express.json());
+app.use('/api', rutas);
 
-// Middlewares obligatorios para la materia AWOS
-app.use(cors()); // Permite que el cliente de Next.js se conecte
-app.use(express.json()); // El servidor solo habla y entiende JSON
-
-// Endpoint de prueba (El contrato inicial)
-app.get('/api/v1/health', (req: Request, res: Response) => {
-  res.status(200).json({
-    status: 'success',
-    message: 'El cerebro de Todú está en línea y funcionando.',
-    timestamp: new Date()
-  });
-});
-
+const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor ejecutandose en http://localhost:${PORT}`);
+  console.log(`Todú API corriendo en http://localhost:${PORT}`);
 });

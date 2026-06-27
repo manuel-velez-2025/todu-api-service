@@ -1,17 +1,14 @@
-// src/domain/task.ts
-
-export interface Task {
+export interface Tarea {
   id: string;
-  title: string;
-  description: string;
-  xpValue: number;      // Puntos de experiencia (tu sistema de progresión)
-  isCompleted: boolean;
-  createdAt: Date;
+  titulo: string;
+  descripcion: string;
+  xpValor: number;
+  estado: boolean;
+  fechaCreacion: Date;
 }
 
-// DTO (Data Transfer Object) para crear tareas
 export interface CreateTaskDTO {
-  title: string;
-  description: string;
-  xpValue: number;
+  titulo: string;
+  descripcion: string;
+  xpValor: number;
 }
