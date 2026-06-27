@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0.36
+    container_name: todu_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_seguro
+      MYSQL_DATABASE: todu_db
+      MYSQL_USER: todu_admin
+      MYSQL_PASSWORD: admin_password_seguro
+    ports:
+      - "3307:3306"
+    volumes:
+      - todu_mysql_data:/var/lib/mysql
+    networks:
+      - todu_network
+
+volumes:
+  todu_mysql_data:
+
+networks:
+  todu_network:
+    driver: bridge
