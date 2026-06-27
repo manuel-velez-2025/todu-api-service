@@ -1,0 +1,16 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno
+.env
+
+# Archivos de compilación
+dist/
+build/
+
+# Logs y archivos del sistema
+*.log
+.DS_Store
+
+# Archivos de depuración de Drizzle
+drizzle/meta/
