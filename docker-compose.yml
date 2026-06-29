@@ -1,16 +1,44 @@
+version: '3.8'
+
 services:
-  db:
-    image: postgres:15
-    container_name: todu_postgres
-    restart: always
+  # Servicio principal de entrada
+  api-gateway:
+    build: ./api-gateway
+    ports: ["3000:3000"]
     environment:
+      USER_SERVICE_URL: http://user-service:3001
+      TASK_SERVICE_URL: http://task-service:3002
+      # ... otros servicios
+
+  # Servicio de usuarios (Auth)
+  user-service:
+    build: ./user-service
+    ports: ["3001:3001"]
+    environment:
+      DATABASE_URL: postgres://usuario:contraseña@db-users:5432/todu_users_db
+    depends_on:
+      - db-users
+
+  # Servicio de tareas
+  task-service:
+    build: ./task-service
+    ports: ["3002:3002"]
+    environment:
+      DATABASE_URL: postgres://usuario:contraseña@db-tasks:5432/todu_tasks_db
+    depends_on:
+      - db-tasks
+
+  # Bases de datos aisladas por servicio
+  db-users:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: todu_users_db
       POSTGRES_USER: usuario
       POSTGRES_PASSWORD: contraseña
-      POSTGRES_DB: todu_db
-    ports:
-      - '5432:5432'
-    volumes:
-      - pgdata:/var/lib/postgresql/data
 
-volumes:
-  pgdata:
+  db-tasks:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: todu_tasks_db
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: contraseña

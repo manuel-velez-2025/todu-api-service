@@ -7,6 +7,7 @@ export const usuarios = pgTable('users', {
   nivel: integer('level').default(1),
   xpTotal: integer('total_xp').default(0),
   fechaCreacion: timestamp('created_at').defaultNow(),
+  password: varchar('password', { length: 255 }).notNull(),
 });
 
 export const tareas = pgTable('tasks', {
