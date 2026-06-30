@@ -1,39 +1,16 @@
 {
   "name": "todu-api-service",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Todú API - Monorepo raíz (cada servicio tiene su propio package.json)",
+  "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch src/index.ts"
+    "user-service": "cd user-service && npm run dev",
+    "task-service": "cd task-service && npm run dev",
+    "api-gateway": "cd api-gateway && npm run dev"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "bcrypt": "^6.0.0",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "drizzle-orm": "^0.45.2",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "pg": "^8.22.0",
-    "postgres": "^3.4.9",
-    "uuid": "^14.0.1",
-    "zod": "^4.4.3"
-  },
-  "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^26.0.0",
-    "@types/pg": "^8.20.0",
-    "@types/uuid": "^10.0.0",
-    "drizzle-kit": "^0.31.10",
-    "nodemon": "^3.1.14",
-    "ts-node": "^10.9.2",
-    "typescript": "^6.0.3"
-  }
+  "type": "commonjs"
 }

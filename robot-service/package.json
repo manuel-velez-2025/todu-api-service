@@ -1,0 +1,23 @@
+{
+  "name": "robot-service",
+  "version": "1.0.0",
+  "description": "Todú API - Robot Service (estado emocional, animaciones)",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1",
+    "pg": "^8.22.0",
+    "drizzle-orm": "^0.45.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^6.0.3"
+  }
+}

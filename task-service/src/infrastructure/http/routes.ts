@@ -1,12 +1,18 @@
 import { Router } from 'express';
-import { crearTareaControlador, obtenerTareasControlador, actualizarTareaControlador, borrarTareaControlador } from './taskController';
+import { TaskController } from './taskController';
 import { authMiddleware } from './middlewares/authMiddleware';
+import { uploadMiddleware } from './middlewares/upload';
 
-const taskRouter = Router();
+export function createTaskRouter(taskController: TaskController): Router {
+  const taskRouter = Router();
 
-taskRouter.post('/', authMiddleware, crearTareaControlador);
-taskRouter.get('/', authMiddleware, obtenerTareasControlador);
-taskRouter.put('/:id', authMiddleware, actualizarTareaControlador);
-taskRouter.delete('/:id', authMiddleware, borrarTareaControlador);
+  taskRouter.post('/', authMiddleware, taskController.crearTarea);
+  taskRouter.get('/', authMiddleware, taskController.obtenerTareas);
+  taskRouter.get('/mis-tareas', authMiddleware, taskController.misTareas);
+  taskRouter.get('/:id', authMiddleware, taskController.obtenerTareaPorId);
+  taskRouter.put('/:id', authMiddleware, taskController.actualizarTarea);
+  taskRouter.delete('/:id', authMiddleware, taskController.borrarTarea);
+  taskRouter.post('/:id/evidencia', authMiddleware, uploadMiddleware, taskController.subirEvidencia);
 
-export { taskRouter };
+  return taskRouter;
+}

@@ -1,9 +1,12 @@
 import { Router } from 'express';
-import { registerControlador, loginControlador } from './authController';
+import { AuthController } from './authController';
 
-const authRouter = Router();
+export function createAuthRouter(authController: AuthController): Router {
+  const authRouter = Router();
 
-authRouter.post('/register', registerControlador);
-authRouter.post('/login', loginControlador);
+  authRouter.post('/register', authController.register);
+  authRouter.post('/login', authController.login);
+  authRouter.get('/google/callback', authController.googleCallback);
 
-export { authRouter };
+  return authRouter;
+}

@@ -1,34 +1,69 @@
 version: '3.8'
 
 services:
-  # Servicio principal de entrada
   api-gateway:
     build: ./api-gateway
     ports: ["3000:3000"]
     environment:
       USER_SERVICE_URL: http://user-service:3001
       TASK_SERVICE_URL: http://task-service:3002
-      # ... otros servicios
+      GAMIFICATION_SERVICE_URL: http://gamification-service:3003
+      ROBOT_SERVICE_URL: http://robot-service:3004
+      GEO_SERVICE_URL: http://geo-service:3005
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - user-service
+      - task-service
 
-  # Servicio de usuarios (Auth)
   user-service:
     build: ./user-service
     ports: ["3001:3001"]
     environment:
       DATABASE_URL: postgres://usuario:contraseña@db-users:5432/todu_users_db
+      JWT_SECRET: ${JWT_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
     depends_on:
       - db-users
 
-  # Servicio de tareas
   task-service:
     build: ./task-service
     ports: ["3002:3002"]
     environment:
       DATABASE_URL: postgres://usuario:contraseña@db-tasks:5432/todu_tasks_db
+      GAMIFICATION_SERVICE_URL: http://gamification-service:3003
+      JWT_SECRET: ${JWT_SECRET}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
     depends_on:
       - db-tasks
 
-  # Bases de datos aisladas por servicio
+  gamification-service:
+    build: ./gamification-service
+    ports: ["3003:3003"]
+    environment:
+      DATABASE_URL: postgres://usuario:contraseña@db-gamification:5432/todu_gamification_db
+      ROBOT_SERVICE_URL: http://robot-service:3004
+    depends_on:
+      - db-gamification
+
+  robot-service:
+    build: ./robot-service
+    ports: ["3004:3004"]
+    environment:
+      DATABASE_URL: postgres://usuario:contraseña@db-robot:5432/todu_robot_db
+    depends_on:
+      - db-robot
+
+  geo-service:
+    build: ./geo-service
+    ports: ["3005:3005"]
+    environment:
+      GOOGLE_PLACES_API_KEY: ${GOOGLE_PLACES_API_KEY}
+
   db-users:
     image: postgres:15
     environment:
@@ -40,5 +75,19 @@ services:
     image: postgres:15
     environment:
       POSTGRES_DB: todu_tasks_db
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: contraseña
+
+  db-gamification:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: todu_gamification_db
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: contraseña
+
+  db-robot:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: todu_robot_db
       POSTGRES_USER: usuario
       POSTGRES_PASSWORD: contraseña
