@@ -3,18 +3,35 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secreto_para_clase';
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(' ')[1];
+export interface AuthPayload {
+  id: string;
+  email: string;
+  username: string;
+}
 
-    if (!token) {
-        return res.status(403).json({ mensaje: "Acceso denegado: Se requiere token" });
+declare global {
+  namespace Express {
+    interface Request {
+      user?: AuthPayload;
     }
+  }
+}
 
-    try {
-        const verificado = jwt.verify(token, JWT_SECRET);
-        (req as any).user = verificado;
-        next();
-    } catch (error) {
-        res.status(401).json({ mensaje: "Token inválido o expirado" });
-    }
-};
+export function authMiddleware(req: Request, res: Response, next: NextFunction): void {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    res.status(401).json({ mensaje: 'Token no proporcionado' });
+    return;
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET) as AuthPayload;
+    req.user = payload;
+    next();
+  } catch {
+    res.status(401).json({ mensaje: 'Token inválido o expirado' });
+  }
+}

@@ -17,7 +17,7 @@ const service = new GamificationService(repo);
 const controller = new GamificationController(service);
 const router = createGamificationRouter(controller);
 
-app.use(router);
+app.use('/gamificacion', router);
 
 const PORT = 3003;
 

@@ -11,7 +11,7 @@ export class CloudinaryAdapter implements IStorageProvider {
   async upload(file: Buffer, folder: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { folder, resource_type: 'image' },
+        { folder, resource_type: 'image', upload_preset: 'todu_preset' },
         (error, result) => {
           if (error || !result) {
             reject(error || new Error('Error al subir imagen a Cloudinary'));

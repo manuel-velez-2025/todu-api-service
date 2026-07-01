@@ -1,14 +1,17 @@
+export type AuthProvider = 'email' | 'google';
+
 export interface User {
   id: string;
-  nombreUsuario: string;
+  username: string;
   email: string;
-  password: string;
+  passwordHash: string | null;
+  authProvider: AuthProvider;
   googleId: string | null;
-  fechaCreacion: Date | null;
+  createdAt: Date | null;
 }
 
-export interface CreateUserDTO {
-  nombre: string;
+export interface RegisterDTO {
+  username: string;
   email: string;
   password: string;
 }
@@ -18,7 +21,11 @@ export interface LoginDTO {
   password: string;
 }
 
+export interface GoogleAuthDTO {
+  googleToken: string;
+}
+
 export interface AuthResult {
   token: string;
-  usuario: Omit<User, 'password'>;
+  user: Omit<User, 'passwordHash'>;
 }

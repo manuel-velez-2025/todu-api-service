@@ -84,7 +84,7 @@ export class TaskService {
     });
     if (validation.approved) {
       try {
-        await fetch(`${GAMIFICATION_SERVICE_URL}/xp`, {
+        await fetch(`${GAMIFICATION_SERVICE_URL}/gamificacion/xp`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: task.usuarioId, xp: task.xpValor }),

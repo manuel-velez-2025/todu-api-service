@@ -5,7 +5,7 @@ export function createGamificationRouter(gamificationController: GamificationCon
   const router = Router();
 
   router.post('/xp', gamificationController.addXp);
-  router.get('/progress/:userId', gamificationController.getProgress);
+  router.get('/progreso/:userId', gamificationController.getProgress);
 
   return router;
 }

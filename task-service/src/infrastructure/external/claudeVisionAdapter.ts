@@ -13,7 +13,8 @@ export class ClaudeVisionAdapter implements IVisionProvider {
   }
 
   async validateEvidence(imageUrl: string, taskDescription: string): Promise<ValidationResult> {
-    if (!process.env.ANTHROPIC_API_KEY) {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey || apiKey.startsWith('COLOCA_AQUI') || apiKey === 'sk-ant-xxxxxxxxxxxx') {
       return {
         approved: true,
         reason: 'Modo desarrollo: sin validación de IA',

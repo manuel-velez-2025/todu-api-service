@@ -1,0 +1,8 @@
+{
+  "dialect": "postgresql",
+  "schema": "./src/infrastructure/database/schema.ts",
+  "out": "./drizzle",
+  "dbCredentials": {
+    "url": "postgres://usuario:contraseña@db-users:5432/todu_users_db"
+  }
+}

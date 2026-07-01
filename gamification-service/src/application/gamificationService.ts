@@ -63,7 +63,7 @@ export class GamificationService {
 
     if (progress.nivel > nivelAnterior) {
       try {
-        await fetch(`${ROBOT_SERVICE_URL}/event`, {
+        await fetch(`${ROBOT_SERVICE_URL}/robot/evento`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
