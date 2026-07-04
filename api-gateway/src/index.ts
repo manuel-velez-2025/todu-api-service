@@ -1,45 +1,47 @@
 import express from 'express';
-import proxy from 'express-http-proxy';
+import cors from 'cors';
+
+import { loggerMiddleware } from './infrastructure/http/middlewares/logger.middleware';
+import authRoutes from './infrastructure/http/routes/auth.routes';
+import tareasRoutes from './infrastructure/http/routes/tareas.routes';
+import gamificacionRoutes from './infrastructure/http/routes/gamificacion.routes';
+import robotRoutes from './infrastructure/http/routes/robot.routes';
+import geoRoutes from './infrastructure/http/routes/geo.routes';
 
 const app = express();
 
-const USER_SERVICE = process.env.USER_SERVICE_URL || 'http://localhost:3001';
-const TASK_SERVICE = process.env.TASK_SERVICE_URL || 'http://localhost:3002';
-const GAMIFICATION_SERVICE = process.env.GAMIFICATION_SERVICE_URL || 'http://localhost:3003';
-const ROBOT_SERVICE = process.env.ROBOT_SERVICE_URL || 'http://localhost:3004';
-const GEO_SERVICE = process.env.GEO_SERVICE_URL || 'http://localhost:3005';
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
-function proxyConRutaCompleta(target: string) {
-  return proxy(target, {
-    proxyReqPathResolver: (req) => `${target}${req.originalUrl}`,
-  });
-}
+app.use(express.json());
 
-app.use('/auth', proxyConRutaCompleta(USER_SERVICE));
+app.use(loggerMiddleware);
 
-app.use('/tareas', proxyConRutaCompleta(TASK_SERVICE));
-
-app.use('/gamificacion', proxyConRutaCompleta(GAMIFICATION_SERVICE));
-
-app.use('/robot', proxyConRutaCompleta(ROBOT_SERVICE));
-
-app.use('/geo', proxyConRutaCompleta(GEO_SERVICE));
+app.use('/auth', authRoutes);
+app.use('/tareas', tareasRoutes);
+app.use('/gamificacion', gamificacionRoutes);
+app.use('/robot', robotRoutes);
+app.use('/geo', geoRoutes);
 
 app.get('/health', (_req, res) => {
   res.json({
     status: 'ok',
+    timestamp: new Date().toISOString(),
     servicios: {
-      user: USER_SERVICE,
-      task: TASK_SERVICE,
-      gamification: GAMIFICATION_SERVICE,
-      robot: ROBOT_SERVICE,
-      geo: GEO_SERVICE,
+      user: process.env.USER_SERVICE_URL || 'http://localhost:3001',
+      task: process.env.TASK_SERVICE_URL || 'http://localhost:3002',
+      gamification: process.env.GAMIFICATION_SERVICE_URL || 'http://localhost:3003',
+      robot: process.env.ROBOT_SERVICE_URL || 'http://localhost:3004',
+      geo: process.env.GEO_SERVICE_URL || 'http://localhost:3005',
     },
   });
 });
 
 app.listen(3000, () => {
-  console.log(' api-gateway corriendo en http://localhost:3000');
+  console.log('api-gateway corriendo en http://localhost:3000');
 });
 
 export default app;

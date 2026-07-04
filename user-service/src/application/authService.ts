@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { IUserRepository } from './IUserRepository';
 import { IOAuthProvider } from './IOAuthProvider';
 import { User, AuthResult, AuthProvider } from '../domain/user';
+import { esMayorDeEdad } from '../domain/ageValidator';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secreto_para_clase';
 
@@ -12,6 +13,7 @@ export const registerSchema = z.object({
   username: z.string().min(2, 'El username debe tener al menos 2 caracteres'),
   email: z.string().email('Email inválido'),
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+  fechaNacimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido, debe ser YYYY-MM-DD'),
 });
 
 export const loginSchema = z.object({
@@ -45,6 +47,11 @@ export class AuthService {
   async register(dto: z.infer<typeof registerSchema>): Promise<AuthResult> {
     const parsed = registerSchema.parse(dto);
 
+    const edadValida = esMayorDeEdad(parsed.fechaNacimiento);
+    if (!edadValida.valido) {
+      throw Object.assign(new Error(edadValida.mensaje), { statusCode: 403 });
+    }
+
     const existing = await this.userRepo.findByEmail(parsed.email);
     if (existing) {
       throw Object.assign(new Error('El email ya está registrado'), { statusCode: 409 });
@@ -59,6 +66,7 @@ export class AuthService {
       passwordHash,
       authProvider: 'email' as AuthProvider,
       googleId: null,
+      fechaNacimiento: parsed.fechaNacimiento,
       createdAt: new Date(),
     };
 
@@ -112,6 +120,7 @@ export class AuthService {
           passwordHash: null,
           authProvider: 'google' as AuthProvider,
           googleId: profile.id,
+          fechaNacimiento: null,
           createdAt: new Date(),
         };
         await this.userRepo.create(newUser);
@@ -150,6 +159,7 @@ export class AuthService {
           passwordHash: null,
           authProvider: 'google' as AuthProvider,
           googleId: profile.id,
+          fechaNacimiento: null,
           createdAt: new Date(),
         };
         await this.userRepo.create(newUser);

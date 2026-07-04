@@ -14,3 +14,6 @@ build/
 
 # Archivos de depuración de Drizzle
 drizzle/meta/
+
+# Documentación de Postman (no subir a producción)
+POSTMAN.md

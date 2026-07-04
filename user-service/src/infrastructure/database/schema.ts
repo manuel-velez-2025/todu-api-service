@@ -7,5 +7,6 @@ export const usuarios = pgTable('users', {
   passwordHash: text('password_hash'),
   authProvider: varchar('auth_provider', { length: 10 }).notNull().default('email'),
   googleId: varchar('google_id', { length: 255 }).unique(),
+  fechaNacimiento: varchar('fecha_nacimiento', { length: 10 }),
   createdAt: timestamp('created_at').defaultNow(),
 });

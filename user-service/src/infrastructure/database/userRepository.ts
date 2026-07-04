@@ -12,6 +12,7 @@ function mapRowToUser(row: Record<string, unknown>): User {
     passwordHash: row.passwordHash as string | null,
     authProvider: row.authProvider as AuthProvider,
     googleId: row.googleId as string | null,
+    fechaNacimiento: row.fechaNacimiento as string | null,
     createdAt: row.createdAt as Date | null,
   };
 }
@@ -40,6 +41,7 @@ export class UserRepository implements IUserRepository {
       passwordHash: user.passwordHash,
       authProvider: user.authProvider,
       googleId: user.googleId,
+      fechaNacimiento: user.fechaNacimiento,
       createdAt: user.createdAt,
     });
   }
@@ -51,6 +53,7 @@ export class UserRepository implements IUserRepository {
     if (data.passwordHash !== undefined) updateData['passwordHash'] = data.passwordHash;
     if (data.authProvider !== undefined) updateData['authProvider'] = data.authProvider;
     if (data.googleId !== undefined) updateData['googleId'] = data.googleId;
+    if (data.fechaNacimiento !== undefined) updateData['fechaNacimiento'] = data.fechaNacimiento;
     if (data.createdAt !== undefined) updateData['createdAt'] = data.createdAt;
 
     await db.update(usuarios).set(updateData).where(eq(usuarios.id, id));

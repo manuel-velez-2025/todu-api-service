@@ -1,0 +1,40 @@
+{
+  "sqltools.connections": [
+    {
+      "name": "Todu - Usuarios",
+      "driver": "PostgreSQL",
+      "server": "localhost",
+      "port": 5436,
+      "database": "todu_users_db",
+      "username": "usuario",
+      "password": "todusecret"
+    },
+    {
+      "name": "Todu - Tareas",
+      "driver": "PostgreSQL",
+      "server": "localhost",
+      "port": 5433,
+      "database": "todu_tasks_db",
+      "username": "usuario",
+      "password": "contraseña"
+    },
+    {
+      "name": "Todu - Gamificacion",
+      "driver": "PostgreSQL",
+      "server": "localhost",
+      "port": 5434,
+      "database": "todu_gamification_db",
+      "username": "usuario",
+      "password": "contraseña"
+    },
+    {
+      "name": "Todu - Robot",
+      "driver": "PostgreSQL",
+      "server": "localhost",
+      "port": 5435,
+      "database": "todu_robot_db",
+      "username": "usuario",
+      "password": "contraseña"
+    }
+  ]
+}

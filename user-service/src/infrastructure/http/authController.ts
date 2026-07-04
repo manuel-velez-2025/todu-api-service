@@ -14,6 +14,10 @@ export class AuthController {
         res.status(400).json({ mensaje: 'Datos inválidos', errores: error.issues || error.errors });
         return;
       }
+      if (error.statusCode === 403) {
+        res.status(403).json({ mensaje: error.message });
+        return;
+      }
       if (error.statusCode === 409) {
         res.status(409).json({ mensaje: error.message });
         return;

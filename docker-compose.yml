@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   api-gateway:
     build: ./api-gateway
@@ -19,7 +17,7 @@ services:
     build: ./user-service
     ports: ["3001:3001"]
     environment:
-      DATABASE_URL: postgres://usuario:contraseña@db-users:5432/todu_users_db
+      DATABASE_URL: postgres://usuario:todusecret@db-users:5432/todu_users_db
       JWT_SECRET: ${JWT_SECRET}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
@@ -31,7 +29,7 @@ services:
     build: ./task-service
     ports: ["3002:3002"]
     environment:
-      DATABASE_URL: postgres://usuario:contraseña@db-tasks:5432/todu_tasks_db
+      DATABASE_URL: postgres://usuario:todusecret@db-tasks:5432/todu_tasks_db
       GAMIFICATION_SERVICE_URL: http://gamification-service:3003
       JWT_SECRET: ${JWT_SECRET}
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
@@ -45,7 +43,7 @@ services:
     build: ./gamification-service
     ports: ["3003:3003"]
     environment:
-      DATABASE_URL: postgres://usuario:contraseña@db-gamification:5432/todu_gamification_db
+      DATABASE_URL: postgres://usuario:todusecret@db-gamification:5432/todu_gamification_db
       ROBOT_SERVICE_URL: http://robot-service:3004
     depends_on:
       - db-gamification
@@ -54,40 +52,47 @@ services:
     build: ./robot-service
     ports: ["3004:3004"]
     environment:
-      DATABASE_URL: postgres://usuario:contraseña@db-robot:5432/todu_robot_db
+      DATABASE_URL: postgres://usuario:todusecret@db-robot:5432/todu_robot_db
     depends_on:
       - db-robot
 
   geo-service:
     build: ./geo-service
     ports: ["3005:3005"]
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       GOOGLE_PLACES_API_KEY: ${GOOGLE_PLACES_API_KEY}
 
   db-users:
     image: postgres:15
+    ports: ["5436:5432"]
     environment:
       POSTGRES_DB: todu_users_db
       POSTGRES_USER: usuario
-      POSTGRES_PASSWORD: contraseña
+      POSTGRES_PASSWORD: todusecret
 
   db-tasks:
     image: postgres:15
+    ports: ["5433:5432"]
     environment:
       POSTGRES_DB: todu_tasks_db
       POSTGRES_USER: usuario
-      POSTGRES_PASSWORD: contraseña
+      POSTGRES_PASSWORD: todusecret
 
   db-gamification:
     image: postgres:15
+    ports: ["5434:5432"]
     environment:
       POSTGRES_DB: todu_gamification_db
       POSTGRES_USER: usuario
-      POSTGRES_PASSWORD: contraseña
+      POSTGRES_PASSWORD: todusecret
 
   db-robot:
     image: postgres:15
+    ports: ["5435:5432"]
     environment:
       POSTGRES_DB: todu_robot_db
       POSTGRES_USER: usuario
-      POSTGRES_PASSWORD: contraseña
+      POSTGRES_PASSWORD: todusecret

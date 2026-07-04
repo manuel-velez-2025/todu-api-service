@@ -7,6 +7,7 @@ export interface User {
   passwordHash: string | null;
   authProvider: AuthProvider;
   googleId: string | null;
+  fechaNacimiento: string | null;
   createdAt: Date | null;
 }
 
@@ -14,6 +15,7 @@ export interface RegisterDTO {
   username: string;
   email: string;
   password: string;
+  fechaNacimiento: string;
 }
 
 export interface LoginDTO {
