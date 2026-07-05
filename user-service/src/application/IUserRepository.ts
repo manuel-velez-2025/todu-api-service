@@ -7,4 +7,7 @@ export interface IUserRepository {
   create(user: User): Promise<void>;
   update(id: string, data: Partial<User>): Promise<void>;
   delete(id: string): Promise<void>;
+  addXp(userId: string, xpAmount: number): Promise<void>;
+  getRanking(limit?: number): Promise<Array<{ id: string; username: string; xpTotal: number }>>;
 }
+

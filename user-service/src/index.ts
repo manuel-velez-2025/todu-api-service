@@ -1,10 +1,13 @@
 import express from 'express';
-import { createAuthRouter, createProfileRouter } from './infrastructure/http/routes';
+import { createAuthRouter, createProfileRouter, createInventoryRouter } from './infrastructure/http/routes';
 import { AuthController } from './infrastructure/http/authController';
 import { ProfileController } from './infrastructure/http/profileController';
+import { InventoryController } from './infrastructure/http/inventoryController';
 import { AuthService } from './application/authService';
 import { ProfileService } from './application/profileService';
+import { InventoryService } from './application/inventoryService';
 import { UserRepository } from './infrastructure/database/userRepository';
+import { InventoryRepository } from './infrastructure/database/inventoryRepository';
 import { GoogleOAuthAdapter } from './infrastructure/external/googleOAuthAdapter';
 
 const app = express();
@@ -15,6 +18,7 @@ app.get('/health', (_req, res) => {
 });
 
 const userRepo = new UserRepository();
+const inventoryRepo = new InventoryRepository();
 const googleOAuth = new GoogleOAuthAdapter();
 
 const authService = new AuthService(userRepo, googleOAuth);
@@ -23,15 +27,21 @@ const authController = new AuthController(authService);
 const profileService = new ProfileService(userRepo);
 const profileController = new ProfileController(profileService);
 
+const inventoryService = new InventoryService(inventoryRepo, userRepo);
+const inventoryController = new InventoryController(inventoryService);
+
 const authRouter = createAuthRouter(authController);
 const profileRouter = createProfileRouter(profileController);
+const inventoryRouter = createInventoryRouter(inventoryController);
 
 app.use('/auth', authRouter);
 app.use('/', profileRouter);
+app.use('/', inventoryRouter);
 
 app.listen(3001, () => {
   console.log('user-service corriendo en http://localhost:3001');
-  console.log('Endpoints de perfil: GET/PUT/DELETE /perfil');
+  console.log('Endpoints: /auth/*, /perfil*, /inventario*');
 });
 
 export default app;
+

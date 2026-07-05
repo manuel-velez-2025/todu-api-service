@@ -8,6 +8,13 @@
       "when": 1783144856540,
       "tag": "0000_gorgeous_puppet_master",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1783285623683,
+      "tag": "0001_redundant_captain_flint",
+      "breakpoints": true
     }
   ]
 }

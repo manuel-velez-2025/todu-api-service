@@ -24,16 +24,13 @@ export interface ProgressResponse {
   progresoPorcentaje: number;
 }
 
-export function xpForLevel(level: number): number {
-  return 50 * level * (level + 1);
+export function calcularNivel(xp: number): number {
+  return Math.floor(Math.sqrt(xp) / 10);
 }
 
-export function calcularNivel(xp: number): number {
-  let nivel = 1;
-  while (xp >= xpForLevel(nivel)) {
-    nivel++;
-  }
-  return nivel;
+export function xpForLevel(level: number): number {
+  if (level <= 0) return 0;
+  return Math.pow(level * 10, 2);
 }
 
 export function xpRestante(xp: number): number {
@@ -42,11 +39,12 @@ export function xpRestante(xp: number): number {
 }
 
 export function progresoPorcentaje(xp: number, nivel: number): number {
-  const xpActualNivel = xpForLevel(nivel - 1);
-  const xpSiguiente = xpForLevel(nivel);
+  const xpActualNivel = xpForLevel(nivel);
+  const xpSiguiente = xpForLevel(nivel + 1);
   const rango = xpSiguiente - xpActualNivel;
+  if (rango <= 0) return 100;
   const actual = xp - xpActualNivel;
-  return Math.min(100, Math.round((actual / rango) * 100));
+  return Math.min(100, Math.max(0, Math.round((actual / rango) * 100)));
 }
 
 export const RECOMPENSAS_NIVEL: Record<number, string> = {

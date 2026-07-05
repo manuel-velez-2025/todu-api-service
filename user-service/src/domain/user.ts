@@ -9,6 +9,8 @@ export interface User {
   googleId: string | null;
   fechaNacimiento: string | null;
   createdAt: Date | null;
+  xpTotal: number;
+  xpActual: number;
 }
 
 export interface RegisterDTO {
@@ -31,3 +33,14 @@ export interface AuthResult {
   token: string;
   user: Omit<User, 'passwordHash'>;
 }
+
+export type InventoryItemId = 'halloween' | 'bunny' | 'ninja' | 'robot' | 'princess' | 'pirate' | 'superhero' | 'wizard';
+
+export interface InventoryItem {
+  id: string;
+  userId: string;
+  itemId: InventoryItemId;
+  isEquipped: boolean;
+  createdAt: Date;
+}
+

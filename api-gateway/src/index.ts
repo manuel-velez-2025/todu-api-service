@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-
 import { loggerMiddleware } from './infrastructure/http/middlewares/logger.middleware';
 import authRoutes from './infrastructure/http/routes/auth.routes';
 import profileRoutes from './infrastructure/http/routes/perfil.routes';
+import inventarioRoutes from './infrastructure/http/routes/inventario.routes';
 import tareasRoutes from './infrastructure/http/routes/tareas.routes';
 import gamificacionRoutes from './infrastructure/http/routes/gamificacion.routes';
 import robotRoutes from './infrastructure/http/routes/robot.routes';
@@ -23,10 +23,12 @@ app.use(loggerMiddleware);
 
 app.use('/auth', authRoutes);
 app.use(profileRoutes);
+app.use(inventarioRoutes);
 app.use('/tareas', tareasRoutes);
 app.use('/gamificacion', gamificacionRoutes);
 app.use('/robot', robotRoutes);
 app.use('/geo', geoRoutes);
+
 
 app.get('/health', (_req, res) => {
   res.json({

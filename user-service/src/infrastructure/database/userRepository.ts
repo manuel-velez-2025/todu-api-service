@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, sql, desc } from 'drizzle-orm';
 import { db } from './db';
 import { usuarios } from './schema';
 import { User, AuthProvider } from '../../domain/user';
@@ -13,6 +13,8 @@ function mapRowToUser(row: Record<string, unknown>): User {
     authProvider: row.authProvider as AuthProvider,
     googleId: row.googleId as string | null,
     fechaNacimiento: row.fechaNacimiento as string | null,
+    xpTotal: (row.xpTotal as number) || 0,
+    xpActual: (row.xpActual as number) || 0,
     createdAt: row.createdAt as Date | null,
   };
 }
@@ -42,6 +44,8 @@ export class UserRepository implements IUserRepository {
       authProvider: user.authProvider,
       googleId: user.googleId,
       fechaNacimiento: user.fechaNacimiento,
+      xpTotal: user.xpTotal ?? 0,
+      xpActual: user.xpActual ?? 0,
       createdAt: user.createdAt,
     });
   }
@@ -54,6 +58,8 @@ export class UserRepository implements IUserRepository {
     if (data.authProvider !== undefined) updateData['authProvider'] = data.authProvider;
     if (data.googleId !== undefined) updateData['googleId'] = data.googleId;
     if (data.fechaNacimiento !== undefined) updateData['fechaNacimiento'] = data.fechaNacimiento;
+    if (data.xpTotal !== undefined) updateData['xpTotal'] = data.xpTotal;
+    if (data.xpActual !== undefined) updateData['xpActual'] = data.xpActual;
     if (data.createdAt !== undefined) updateData['createdAt'] = data.createdAt;
 
     await db.update(usuarios).set(updateData).where(eq(usuarios.id, id));
@@ -62,4 +68,23 @@ export class UserRepository implements IUserRepository {
   async delete(id: string): Promise<void> {
     await db.delete(usuarios).where(eq(usuarios.id, id));
   }
+
+  async addXp(userId: string, xpAmount: number): Promise<void> {
+    await db.update(usuarios)
+      .set({
+        xpTotal: sql`${usuarios.xpTotal} + ${xpAmount}`,
+        xpActual: sql`${usuarios.xpActual} + ${xpAmount}`,
+      })
+      .where(eq(usuarios.id, userId));
+  }
+
+  async getRanking(limit: number = 50): Promise<Array<{ id: string; username: string; xpTotal: number }>> {
+    const result = await db
+      .select({ id: usuarios.id, username: usuarios.username, xpTotal: usuarios.xpTotal })
+      .from(usuarios)
+      .orderBy(desc(usuarios.xpTotal))
+      .limit(limit);
+    return result;
+  }
 }
+

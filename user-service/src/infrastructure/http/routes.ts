@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from './authController';
 import { ProfileController } from './profileController';
+import { InventoryController } from './inventoryController';
 import { authMiddleware } from './authMiddleware';
 
 export function createAuthRouter(authController: AuthController): Router {
@@ -25,3 +26,15 @@ export function createProfileRouter(profileController: ProfileController): Route
 
   return profileRouter;
 }
+
+export function createInventoryRouter(inventoryController: InventoryController): Router {
+  const inventoryRouter = Router();
+
+  inventoryRouter.get('/inventario', authMiddleware, inventoryController.getInventory);
+  inventoryRouter.post('/inventario/agregar', authMiddleware, inventoryController.addItem);
+  inventoryRouter.post('/inventario/equipar', authMiddleware, inventoryController.equipItem);
+  inventoryRouter.post('/inventario/desequipar', authMiddleware, inventoryController.unequipItem);
+
+  return inventoryRouter;
+}
+

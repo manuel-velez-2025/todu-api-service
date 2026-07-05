@@ -31,7 +31,6 @@ function proxyToUser(req: Request, res: Response): void {
     });
 }
 
-// Todas las rutas de perfil requieren autenticación
 profileRouter.get('/perfil', authMiddleware, proxyToUser);
 profileRouter.put('/perfil/username', authMiddleware, proxyToUser);
 profileRouter.put('/perfil/password', authMiddleware, proxyToUser);
