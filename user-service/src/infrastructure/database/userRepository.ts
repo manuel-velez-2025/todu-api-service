@@ -58,4 +58,8 @@ export class UserRepository implements IUserRepository {
 
     await db.update(usuarios).set(updateData).where(eq(usuarios.id, id));
   }
+
+  async delete(id: string): Promise<void> {
+    await db.delete(usuarios).where(eq(usuarios.id, id));
+  }
 }

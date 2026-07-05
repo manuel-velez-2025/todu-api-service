@@ -3,6 +3,7 @@ import cors from 'cors';
 
 import { loggerMiddleware } from './infrastructure/http/middlewares/logger.middleware';
 import authRoutes from './infrastructure/http/routes/auth.routes';
+import profileRoutes from './infrastructure/http/routes/perfil.routes';
 import tareasRoutes from './infrastructure/http/routes/tareas.routes';
 import gamificacionRoutes from './infrastructure/http/routes/gamificacion.routes';
 import robotRoutes from './infrastructure/http/routes/robot.routes';
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(loggerMiddleware);
 
 app.use('/auth', authRoutes);
+app.use(profileRoutes);
 app.use('/tareas', tareasRoutes);
 app.use('/gamificacion', gamificacionRoutes);
 app.use('/robot', robotRoutes);
