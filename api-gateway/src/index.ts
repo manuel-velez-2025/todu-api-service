@@ -12,6 +12,15 @@ import geoRoutes from './infrastructure/http/routes/geo.routes';
 
 
 const app = express();
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 app.use(cors({
   origin: '*',
