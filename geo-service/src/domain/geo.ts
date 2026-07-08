@@ -12,6 +12,7 @@ export interface Place {
   };
   photoRef?: string;
   openNow?: boolean;
+  tip?: string;
 }
 
 export interface PlacesQueryDTO {

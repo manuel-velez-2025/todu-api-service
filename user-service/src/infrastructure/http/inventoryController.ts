@@ -15,9 +15,9 @@ export class InventoryController {
 
   getInventory = async (req: Request, res: Response): Promise<void> => {
     try {
-      const userId = (req as any).userId;
-      const items = await this.inventoryService.getInventory(userId);
-      res.json(items);
+      const userId = req.user!.id;
+      const inventario = await this.inventoryService.getInventory(userId);
+      res.json(inventario);
     } catch (error: any) {
       const statusCode = error.statusCode || 500;
       res.status(statusCode).json({
@@ -27,9 +27,31 @@ export class InventoryController {
     }
   };
 
+  unlockItem = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const { itemId } = equipItemSchema.parse(req.body);
+      const item = await this.inventoryService.unlockItem(userId, itemId as InventoryItemId);
+      res.status(201).json({
+        mensaje: 'Item desbloqueado correctamente',
+        item,
+      });
+    } catch (error: any) {
+      if (isZodError(error)) {
+        res.status(400).json({ error: 'Datos inválidos', mensaje: getZodMessage(error) });
+        return;
+      }
+      const statusCode = error.statusCode || 500;
+      res.status(statusCode).json({
+        error: 'Error al desbloquear item',
+        mensaje: error.message || 'Error interno',
+      });
+    }
+  };
+
   addItem = async (req: Request, res: Response): Promise<void> => {
     try {
-      const userId = (req as any).userId;
+      const userId = req.user!.id;
       const { itemId } = equipItemSchema.parse(req.body);
       const item = await this.inventoryService.addItem(userId, itemId as InventoryItemId);
       res.status(201).json(item);
@@ -48,7 +70,7 @@ export class InventoryController {
 
   equipItem = async (req: Request, res: Response): Promise<void> => {
     try {
-      const userId = (req as any).userId;
+      const userId = req.user!.id;
       const { itemId } = equipItemSchema.parse(req.body);
       const item = await this.inventoryService.equipItem(userId, itemId as InventoryItemId);
       res.json(item);
@@ -67,7 +89,7 @@ export class InventoryController {
 
   unequipItem = async (req: Request, res: Response): Promise<void> => {
     try {
-      const userId = (req as any).userId;
+      const userId = req.user!.id;
       const { itemId } = equipItemSchema.parse(req.body);
       await this.inventoryService.unequipItem(userId, itemId as InventoryItemId);
       res.json({ mensaje: 'Item desequipado exitosamente' });
@@ -84,4 +106,5 @@ export class InventoryController {
     }
   };
 }
+
 

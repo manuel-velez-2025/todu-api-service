@@ -87,4 +87,11 @@ export class TaskRepository implements ITaskRepository {
       })
       .where(eq(tareas.id, id));
   }
+
+  async markCompleted(id: string): Promise<void> {
+    await db.update(tareas)
+      .set({ estado: 'completed' })
+      .where(eq(tareas.id, id));
+  }
 }
+

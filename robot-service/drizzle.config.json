@@ -1,0 +1,8 @@
+{
+  "schema": "./src/infrastructure/database/schema.ts",
+  "out": "./drizzle",
+  "dialect": "postgresql",
+  "dbCredentials": {
+    "url": "postgres://usuario:todusecret@localhost:5435/todu_robot_db"
+  }
+}

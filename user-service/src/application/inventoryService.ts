@@ -9,6 +9,20 @@ const INVENTORY_ITEMS: InventoryItemId[] = [
   'princess', 'pirate', 'superhero', 'wizard',
 ];
 
+/**
+ * Catálogo de accesorios con nombre para mostrar, costo en XP y descripción.
+ */
+export const ITEM_CATALOG: Record<InventoryItemId, { nombre: string; costo: number; descripcion: string }> = {
+  halloween: { nombre: '🎃 Halloween', costo: 50, descripcion: 'Disfraz de Halloween espeluznante' },
+  bunny:    { nombre: '🐰 Bunny',    costo: 75, descripcion: 'Orejas de conejo tiernas' },
+  ninja:    { nombre: '🥷 Ninja',    costo: 100, descripcion: 'Disfraz de ninja sigiloso' },
+  robot:    { nombre: '🤖 Robot',    costo: 150, descripcion: 'Traje robótico futurista' },
+  princess: { nombre: '👸 Princess', costo: 200, descripcion: 'Corona y vestido de princesa' },
+  pirate:   { nombre: '🏴‍☠️ Pirate', costo: 250, descripcion: 'Sombrero y espada de pirata' },
+  superhero:{ nombre: '🦸 Superhéroe', costo: 300, descripcion: 'Capa de superhéroe' },
+  wizard:   { nombre: '🧙 Mago',     costo: 400, descripcion: 'Túnica y sombrero de mago' },
+};
+
 export const equipItemSchema = z.object({
   itemId: z.string().refine(
     (val) => (INVENTORY_ITEMS as string[]).includes(val),
@@ -16,6 +30,19 @@ export const equipItemSchema = z.object({
   ),
 });
 
+export interface InventarioCompleto {
+  /** Lista de todos los items del catálogo con su estado */
+  items: Array<{
+    itemId: InventoryItemId;
+    nombre: string;
+    costo: number;
+    descripcion: string;
+    desbloqueado: boolean;
+    equipado: boolean;
+  }>;
+  /** ID del item actualmente equipado (null si ninguno) */
+  itemEquipado: string | null;
+}
 
 export class InventoryService {
   constructor(
@@ -23,8 +50,62 @@ export class InventoryService {
     private userRepo: IUserRepository,
   ) {}
 
-  async getInventory(userId: string): Promise<InventoryItem[]> {
-    return this.inventoryRepo.findByUserId(userId);
+  /**
+   * GET /inventory — Devuelve el catálogo completo con estado de desbloqueo y equipamiento.
+   */
+  async getInventory(userId: string): Promise<InventarioCompleto> {
+    const userItems = await this.inventoryRepo.findByUserId(userId);
+    const itemEquipado = userItems.find((i) => i.isEquipped);
+    const ownedItemIds = new Set(userItems.map((i) => i.itemId));
+
+    const items = INVENTORY_ITEMS.map((itemId) => ({
+      itemId,
+      nombre: ITEM_CATALOG[itemId].nombre,
+      costo: ITEM_CATALOG[itemId].costo,
+      descripcion: ITEM_CATALOG[itemId].descripcion,
+      desbloqueado: ownedItemIds.has(itemId),
+      equipado: itemEquipado?.itemId === itemId,
+    }));
+
+    return {
+      items,
+      itemEquipado: itemEquipado?.itemId ?? null,
+    };
+  }
+
+  async unlockItem(userId: string, itemId: InventoryItemId): Promise<InventoryItem> {
+    const user = await this.userRepo.findById(userId);
+    if (!user) {
+      throw Object.assign(new Error('Usuario no encontrado'), { statusCode: 404 });
+    }
+
+    if (!INVENTORY_ITEMS.includes(itemId)) {
+      throw Object.assign(
+        new Error(`Item inválido. Válidos: ${INVENTORY_ITEMS.join(', ')}`),
+        { statusCode: 400 },
+      );
+    }
+
+    const existing = await this.inventoryRepo.findByUserId(userId);
+    const alreadyHas = existing.find((i) => i.itemId === itemId);
+    if (alreadyHas) {
+      throw Object.assign(new Error('Ya posees este item'), { statusCode: 409 });
+    }
+
+    const costo = ITEM_CATALOG[itemId].costo;
+
+    await this.userRepo.deductXpAtomically(userId, costo);
+
+    const newItem: InventoryItem = {
+      id: uuid(),
+      userId,
+      itemId,
+      isEquipped: false,
+      createdAt: new Date(),
+    };
+
+    await this.inventoryRepo.create(newItem);
+    return newItem;
   }
 
   async addItem(userId: string, itemId: InventoryItemId): Promise<InventoryItem> {
@@ -81,4 +162,5 @@ export class InventoryService {
 
     await this.inventoryRepo.update(targetItem.id, { isEquipped: false });
   }
+
 }

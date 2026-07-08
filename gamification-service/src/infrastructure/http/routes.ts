@@ -14,9 +14,10 @@ export function createGamificationRouter(gamificationController: GamificationCon
 export function createXpRouter(xpController: XpController): Router {
   const router = Router();
 
-  router.post('/xp/atomic', xpController.addXp);
+  router.post('/atomic', xpController.addXp);
   router.get('/progreso/:userId', xpController.getProgress);
 
   return router;
 }
+
 

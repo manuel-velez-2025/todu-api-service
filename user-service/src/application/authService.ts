@@ -68,7 +68,10 @@ export class AuthService {
       googleId: null,
       fechaNacimiento: parsed.fechaNacimiento,
       createdAt: new Date(),
+      xpTotal: 0,
+      xpActual: 0,
     };
+
 
     await this.userRepo.create(newUser);
 
@@ -122,6 +125,8 @@ export class AuthService {
           googleId: profile.id,
           fechaNacimiento: null,
           createdAt: new Date(),
+          xpTotal: 0,
+          xpActual: 0,
         };
         await this.userRepo.create(newUser);
         user = newUser;
@@ -132,6 +137,7 @@ export class AuthService {
     return { token, user: stripPassword(user) };
   }
   
+
   async loginWithGoogleCode(code: string): Promise<AuthResult> {
     if (!this.oauthAdapter) {
       throw Object.assign(new Error('OAuth de Google no configurado'), { statusCode: 501 });
@@ -161,6 +167,8 @@ export class AuthService {
           googleId: profile.id,
           fechaNacimiento: null,
           createdAt: new Date(),
+          xpTotal: 0,
+          xpActual: 0,
         };
         await this.userRepo.create(newUser);
         user = newUser;
@@ -171,3 +179,4 @@ export class AuthService {
     return { token, user: stripPassword(user) };
   }
 }
+

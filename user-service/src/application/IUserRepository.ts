@@ -9,5 +9,7 @@ export interface IUserRepository {
   delete(id: string): Promise<void>;
   addXp(userId: string, xpAmount: number): Promise<void>;
   getRanking(limit?: number): Promise<Array<{ id: string; username: string; xpTotal: number }>>;
+  deductXpAtomically(userId: string, amount: number): Promise<number>;
 }
+
 

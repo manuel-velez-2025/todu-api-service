@@ -1,43 +1,42 @@
 import { Router, Request, Response } from 'express';
 import axios from 'axios';
 import { authMiddleware } from '../middlewares/auth.middleware';
+import { checkLevel } from '../middlewares/checkLevel.middleware';
+
+const ROBOT_SERVICE_URL = process.env.ROBOT_SERVICE_URL || 'http://localhost:3004';
 
 const router = Router();
 
-const ROBOT_SERVICE = process.env.ROBOT_SERVICE_URL || 'http://localhost:3004';
-
 router.use(authMiddleware);
+router.use(checkLevel(1));
 
-router.use(async (req: Request, res: Response) => {
+router.post('/evento', async (req: Request, res: Response) => {
   try {
-    const targetUrl = `${ROBOT_SERVICE}${req.originalUrl}`;
-    const response = await axios({
-      method: req.method as any,
-      url: targetUrl,
-      data: req.body,
+    const response = await axios.post(`${ROBOT_SERVICE_URL}/robot/evento`, req.body, {
       headers: {
-        'Content-Type': req.headers['content-type'] || 'application/json',
-        'authorization': req.headers['authorization'] as string,
+        'Content-Type': 'application/json',
+        Authorization: req.headers.authorization as string,
         'x-user-id': req.headers['x-user-id'] as string,
-        'x-user-email': req.headers['x-user-email'] as string,
       },
-      validateStatus: () => true,
     });
-
-    res.status(response.status).json(response.data);
+    res.json(response.data);
   } catch (error: any) {
-    if (error.code === 'ECONNREFUSED' || error.code === 'ECONNRESET') {
-      res.status(503).json({
-        error: 'Servicio no disponible',
-        mensaje: 'El servicio del robot no esta disponible en este momento',
-      });
-    } else {
-      res.status(500).json({
-        error: 'Error interno del gateway',
-        mensaje: error.message,
-      });
-    }
+    const status = error.response?.status || 502;
+    res.status(status).json(error.response?.data || { error: 'Error al conectar con robot-service' });
+  }
+});
+
+router.get('/estado/:userId', async (req: Request, res: Response) => {
+  try {
+    const response = await axios.get(`${ROBOT_SERVICE_URL}/robot/estado/${req.params.userId}`, {
+      headers: { Authorization: req.headers.authorization as string },
+    });
+    res.json(response.data);
+  } catch (error: any) {
+    const status = error.response?.status || 502;
+    res.status(status).json(error.response?.data || { error: 'Error al conectar con robot-service' });
   }
 });
 
 export default router;
+

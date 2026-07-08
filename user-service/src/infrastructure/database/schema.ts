@@ -21,3 +21,4 @@ export const inventarios = pgTable('inventories', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
+

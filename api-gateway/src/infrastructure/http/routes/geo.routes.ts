@@ -1,12 +1,14 @@
 import { Router, Request, Response } from 'express';
 import axios from 'axios';
 import { authMiddleware } from '../middlewares/auth.middleware';
+import { checkLevel } from '../middlewares/checkLevel.middleware';
 
 const router = Router();
 
 const GEO_SERVICE = process.env.GEO_SERVICE_URL || 'http://localhost:3005';
 
 router.use(authMiddleware);
+router.use(checkLevel(2));
 
 router.use(async (req: Request, res: Response) => {
   try {

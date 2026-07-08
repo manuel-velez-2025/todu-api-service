@@ -16,4 +16,6 @@ export interface ITaskRepository {
       proofConfidence: string;
     }
   ): Promise<void>;
+  markCompleted(id: string): Promise<void>;
 }
+

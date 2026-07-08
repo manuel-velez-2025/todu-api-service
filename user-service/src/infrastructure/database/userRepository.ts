@@ -1,8 +1,9 @@
 import { eq, sql, desc } from 'drizzle-orm';
-import { db } from './db';
+import { db, pool } from './db';
 import { usuarios } from './schema';
 import { User, AuthProvider } from '../../domain/user';
 import { IUserRepository } from '../../application/IUserRepository';
+
 
 function mapRowToUser(row: Record<string, unknown>): User {
   return {
@@ -78,7 +79,48 @@ export class UserRepository implements IUserRepository {
       .where(eq(usuarios.id, userId));
   }
 
+  async deductXpAtomically(userId: string, amount: number): Promise<number> {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const result = await client.query(
+        `SELECT xp_total FROM users WHERE id = $1 FOR UPDATE`,
+        [userId],
+      );
+
+      if (result.rows.length === 0) {
+        await client.query('ROLLBACK');
+        throw Object.assign(new Error('Usuario no encontrado'), { statusCode: 404 });
+      }
+
+      const xpTotal = Number(result.rows[0].xp_total);
+      if (xpTotal < amount) {
+        await client.query('ROLLBACK');
+        throw Object.assign(
+          new Error(`XP insuficiente. Tienes ${xpTotal} XP, necesitas ${amount} XP.`),
+          { statusCode: 400 },
+        );
+      }
+
+      const nuevoXpTotal = xpTotal - amount;
+      await client.query(
+        `UPDATE users SET xp_total = $1, xp_actual = $1 WHERE id = $2`,
+        [nuevoXpTotal, userId],
+      );
+
+      await client.query('COMMIT');
+      return nuevoXpTotal;
+    } catch (error) {
+      await client.query('ROLLBACK').catch(() => {});
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
   async getRanking(limit: number = 50): Promise<Array<{ id: string; username: string; xpTotal: number }>> {
+
     const result = await db
       .select({ id: usuarios.id, username: usuarios.username, xpTotal: usuarios.xpTotal })
       .from(usuarios)

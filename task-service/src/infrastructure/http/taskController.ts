@@ -9,6 +9,47 @@ interface MulterRequest extends Request {
 export class TaskController {
   constructor(private taskService: TaskService) {}
 
+  completarTarea = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const id = req.params.id as string;
+      const usuarioId = (req as any).user?.id;
+
+      if (!usuarioId) {
+        res.status(401).json({ mensaje: 'Usuario no autenticado' });
+        return;
+      }
+
+      const tarea = await this.taskService.completeTask(id, usuarioId);
+      res.status(200).json({
+        mensaje: 'Tarea completada — XP sumado correctamente',
+        tarea,
+      });
+    } catch (error: any) {
+      if (error.message === 'Tarea no encontrada') {
+        res.status(404).json({ mensaje: error.message });
+        return;
+      }
+      if (error.message?.includes('permiso')) {
+        res.status(403).json({ mensaje: error.message });
+        return;
+      }
+      if (error.message?.includes('ya está completada')) {
+        res.status(409).json({ mensaje: error.message });
+        return;
+      }
+      if (error.message?.includes('Error al sumar XP')) {
+        res.status(502).json({
+          mensaje: 'No se pudo sumar el XP. La tarea NO ha sido marcada como completada.',
+          detalle: error.message,
+        });
+        return;
+      }
+      console.error('Error al completar tarea:', error);
+      res.status(500).json({ mensaje: 'Error al completar la tarea' });
+    }
+  };
+
+
   crearTarea = async (req: Request, res: Response): Promise<void> => {
     try {
       const usuarioId = (req as any).user?.id;

@@ -1,0 +1,8 @@
+{
+  "dialect": "postgresql",
+  "schema": "./src/infrastructure/database/schema.ts",
+  "out": "./drizzle",
+  "dbCredentials": {
+    "url": "postgres://usuario:todusecret@localhost:5437/todu_geo_db"
+  }
+}

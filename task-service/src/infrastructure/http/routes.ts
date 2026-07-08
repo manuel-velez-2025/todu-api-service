@@ -13,6 +13,8 @@ export function createTaskRouter(taskController: TaskController): Router {
   taskRouter.put('/:id', authMiddleware, taskController.actualizarTarea);
   taskRouter.delete('/:id', authMiddleware, taskController.borrarTarea);
   taskRouter.post('/:id/evidencia', authMiddleware, uploadMiddleware, taskController.subirEvidencia);
+  taskRouter.patch('/:id/complete', authMiddleware, taskController.completarTarea);
 
   return taskRouter;
 }
+

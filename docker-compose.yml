@@ -31,6 +31,7 @@ services:
     environment:
       DATABASE_URL: postgres://usuario:todusecret@db-tasks:5432/todu_tasks_db
       GAMIFICATION_SERVICE_URL: http://gamification-service:3003
+      ROBOT_SERVICE_URL: http://robot-service:3004
       JWT_SECRET: ${JWT_SECRET}
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
@@ -63,7 +64,11 @@ services:
       - 8.8.8.8
       - 1.1.1.1
     environment:
+      DATABASE_URL: postgres://usuario:todusecret@db-geo:5432/todu_geo_db
       GOOGLE_PLACES_API_KEY: ${GOOGLE_PLACES_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    depends_on:
+      - db-geo
 
   db-users:
     image: postgres:15
@@ -94,5 +99,13 @@ services:
     ports: ["5435:5432"]
     environment:
       POSTGRES_DB: todu_robot_db
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: todusecret
+
+  db-geo:
+    image: postgres:15
+    ports: ["5437:5432"]
+    environment:
+      POSTGRES_DB: todu_geo_db
       POSTGRES_USER: usuario
       POSTGRES_PASSWORD: todusecret

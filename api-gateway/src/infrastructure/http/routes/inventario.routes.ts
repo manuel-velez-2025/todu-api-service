@@ -10,7 +10,7 @@ router.use(authMiddleware);
 
 router.get('/inventario', async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = req.headers['x-user-id'];
     const response = await axios.get(`${USER_SERVICE_URL}/inventario`, {
       headers: { 'x-user-id': userId, Authorization: req.headers.authorization },
     });
@@ -21,9 +21,22 @@ router.get('/inventario', async (req: Request, res: Response) => {
   }
 });
 
+router.post('/inventario/desbloquear', async (req: Request, res: Response) => {
+  try {
+    const userId = req.headers['x-user-id'];
+    const response = await axios.post(`${USER_SERVICE_URL}/inventario/desbloquear`, req.body, {
+      headers: { 'x-user-id': userId, Authorization: req.headers.authorization, 'Content-Type': 'application/json' },
+    });
+    res.status(response.status).json(response.data);
+  } catch (error: any) {
+    const status = error.response?.status || 502;
+    res.status(status).json(error.response?.data || { error: 'Error al conectar con user-service' });
+  }
+});
+
 router.post('/inventario/agregar', async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = req.headers['x-user-id'];
     const response = await axios.post(`${USER_SERVICE_URL}/inventario/agregar`, req.body, {
       headers: { 'x-user-id': userId, Authorization: req.headers.authorization, 'Content-Type': 'application/json' },
     });
@@ -36,7 +49,7 @@ router.post('/inventario/agregar', async (req: Request, res: Response) => {
 
 router.post('/inventario/equipar', async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = req.headers['x-user-id'];
     const response = await axios.post(`${USER_SERVICE_URL}/inventario/equipar`, req.body, {
       headers: { 'x-user-id': userId, Authorization: req.headers.authorization, 'Content-Type': 'application/json' },
     });
@@ -49,7 +62,7 @@ router.post('/inventario/equipar', async (req: Request, res: Response) => {
 
 router.post('/inventario/desequipar', async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = req.headers['x-user-id'];
     const response = await axios.post(`${USER_SERVICE_URL}/inventario/desequipar`, req.body, {
       headers: { 'x-user-id': userId, Authorization: req.headers.authorization, 'Content-Type': 'application/json' },
     });
