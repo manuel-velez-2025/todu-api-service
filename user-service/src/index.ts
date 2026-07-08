@@ -38,8 +38,10 @@ app.use('/auth', authRouter);
 app.use('/', profileRouter);
 app.use('/', inventoryRouter);
 
-app.listen(3001, () => {
-  console.log('user-service corriendo en http://localhost:3001');
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
+
+app.listen(PORT, () => {
+  console.log(`user-service corriendo en puerto ${PORT}`);
   console.log('Endpoints: /auth/*, /perfil*, /inventario*');
 });
 

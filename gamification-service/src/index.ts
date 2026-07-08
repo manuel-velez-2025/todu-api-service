@@ -25,11 +25,11 @@ const xpRouter = createXpRouter(xpController);
 app.use('/gamificacion', router);
 app.use('/xp', xpRouter);
 
-const PORT = 3003;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3003;
 
 testConnection().then(() => {
   app.listen(PORT, () => {
-    console.log(`gamification-service corriendo en http://localhost:${PORT}`);
+    console.log(`gamification-service corriendo en puerto ${PORT}`);
     console.log('Endpoints: /gamificacion/xp, /xp/atomic, /xp/progreso/:userId');
   });
 });

@@ -47,8 +47,10 @@ app.get('/health', (_req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('api-gateway corriendo en http://localhost:3000');
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+
+app.listen(PORT, () => {
+  console.log(`api-gateway corriendo en puerto ${PORT}`);
 });
 
 export default app;

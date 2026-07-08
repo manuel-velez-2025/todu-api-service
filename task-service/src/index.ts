@@ -23,8 +23,10 @@ const taskController = new TaskController(taskService);
 const taskRouter = createTaskRouter(taskController);
 app.use('/tareas', taskRouter);
 
-app.listen(3002, () => {
-  console.log('task-service corriendo en http://localhost:3002');
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3002;
+
+app.listen(PORT, () => {
+  console.log(`task-service corriendo en puerto ${PORT}`);
 });
 
 export default app;

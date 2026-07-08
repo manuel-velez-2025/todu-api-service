@@ -19,11 +19,11 @@ const router = createRobotRouter(controller);
 
 app.use('/robot', router);
 
-const PORT = 3004;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3004;
 
 testConnection().then(() => {
   app.listen(PORT, () => {
-    console.log(`robot-service corriendo en http://localhost:${PORT}`);
+    console.log(`robot-service corriendo en puerto ${PORT}`);
   });
 });
 
