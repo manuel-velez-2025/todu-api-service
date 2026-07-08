@@ -10,6 +10,8 @@ export class RobotRepository implements IRobotRepository {
       id: row.id,
       userId: row.userId,
       emotion: row.emotion,
+      expresion: row.expresion ?? 'neutral',
+      accesorio: row.accesorio ?? 'ninguno',
       nivel: row.nivel,
       ultimaActividad: row.ultimaActividad ?? new Date(),
       fechaCreacion: row.fechaCreacion ?? new Date(),
@@ -26,6 +28,8 @@ export class RobotRepository implements IRobotRepository {
       id: state.id!,
       userId: state.userId,
       emotion: state.emotion,
+      expresion: state.expresion ?? 'neutral',
+      accesorio: state.accesorio ?? 'ninguno',
       nivel: state.nivel,
       ultimaActividad: state.ultimaActividad,
       fechaCreacion: state.fechaCreacion,
@@ -36,6 +40,8 @@ export class RobotRepository implements IRobotRepository {
     await db.update(robotState)
       .set({
         ...(data.emotion !== undefined && { emotion: data.emotion }),
+        ...(data.expresion !== undefined && { expresion: data.expresion }),
+        ...(data.accesorio !== undefined && { accesorio: data.accesorio }),
         ...(data.nivel !== undefined && { nivel: data.nivel }),
         ...(data.ultimaActividad !== undefined && { ultimaActividad: data.ultimaActividad }),
       })

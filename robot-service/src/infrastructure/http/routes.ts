@@ -6,6 +6,8 @@ export function createRobotRouter(robotController: RobotController): Router {
 
   router.post('/evento', robotController.processEvent);
   router.get('/estado/:userId', robotController.getState);
+  router.get('/', robotController.getMyRobot);
+  router.put('/', robotController.updateRobot);
 
   return router;
 }

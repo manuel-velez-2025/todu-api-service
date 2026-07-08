@@ -68,10 +68,21 @@ export class ProfileService {
     return { mensaje: 'Contraseña actualizada exitosamente' };
   }
 
-  async deleteAccount(userId: string): Promise<{ mensaje: string }> {
+  async deleteAccount(userId: string, password?: string): Promise<{ mensaje: string }> {
     const user = await this.userRepo.findById(userId);
     if (!user) {
       throw Object.assign(new Error('Usuario no encontrado'), { statusCode: 404 });
+    }
+
+    if (user.passwordHash) {
+      if (!password) {
+        throw Object.assign(new Error('La contraseña es requerida para eliminar la cuenta'), { statusCode: 400 });
+      }
+
+      const valid = await bcrypt.compare(password, user.passwordHash);
+      if (!valid) {
+        throw Object.assign(new Error('La contraseña es incorrecta'), { statusCode: 401 });
+      }
     }
 
     await this.userRepo.delete(userId);

@@ -70,11 +70,20 @@ export class ProfileController {
   deleteAccount = async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = req.user!.id;
-      const result = await this.profileService.deleteAccount(userId);
+      const { password } = req.body;
+      const result = await this.profileService.deleteAccount(userId, password);
       res.status(200).json(result);
     } catch (error: any) {
       if (error.statusCode === 404) {
         res.status(404).json({ mensaje: error.message });
+        return;
+      }
+      if (error.statusCode === 400) {
+        res.status(400).json({ mensaje: error.message });
+        return;
+      }
+      if (error.statusCode === 401) {
+        res.status(401).json({ mensaje: error.message });
         return;
       }
       console.error('Error en deleteAccount:', error);

@@ -9,7 +9,6 @@ const router = Router();
 
 router.use(authMiddleware);
 router.use(checkLevel(1));
-
 router.post('/evento', async (req: Request, res: Response) => {
   try {
     const response = await axios.post(`${ROBOT_SERVICE_URL}/robot/evento`, req.body, {
@@ -38,5 +37,35 @@ router.get('/estado/:userId', async (req: Request, res: Response) => {
   }
 });
 
-export default router;
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    const response = await axios.get(`${ROBOT_SERVICE_URL}/robot`, {
+      headers: {
+        Authorization: req.headers.authorization as string,
+        'x-user-id': req.headers['x-user-id'] as string,
+      },
+    });
+    res.json(response.data);
+  } catch (error: any) {
+    const status = error.response?.status || 502;
+    res.status(status).json(error.response?.data || { error: 'Error al conectar con robot-service' });
+  }
+});
 
+router.put('/', async (req: Request, res: Response) => {
+  try {
+    const response = await axios.put(`${ROBOT_SERVICE_URL}/robot`, req.body, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: req.headers.authorization as string,
+        'x-user-id': req.headers['x-user-id'] as string,
+      },
+    });
+    res.json(response.data);
+  } catch (error: any) {
+    const status = error.response?.status || 502;
+    res.status(status).json(error.response?.data || { error: 'Error al conectar con robot-service' });
+  }
+});
+
+export default router;
