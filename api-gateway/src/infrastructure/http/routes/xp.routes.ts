@@ -8,6 +8,7 @@ const router = Router();
 
 router.post('/atomic', authMiddleware, async (req: Request, res: Response) => {
   try {
+    console.log(`Connecting to: ${GAMIFICATION_SERVICE}/xp/atomic`);
     const response = await axios.post(`${GAMIFICATION_SERVICE}/xp/atomic`, req.body, {
       headers: {
         'Content-Type': 'application/json',
@@ -24,6 +25,7 @@ router.post('/atomic', authMiddleware, async (req: Request, res: Response) => {
 
 router.get('/progreso/:userId', async (req: Request, res: Response) => {
   try {
+    console.log(`Connecting to: ${GAMIFICATION_SERVICE}/xp/progreso/${req.params.userId}`);
     const response = await axios.get(`${GAMIFICATION_SERVICE}/xp/progreso/${req.params.userId}`);
     res.json(response.data);
   } catch (error: any) {

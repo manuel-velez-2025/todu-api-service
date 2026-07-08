@@ -11,6 +11,7 @@ router.use(authMiddleware);
 router.use(checkLevel(1));
 router.post('/evento', async (req: Request, res: Response) => {
   try {
+    console.log(`Connecting to: ${ROBOT_SERVICE_URL}/robot/evento`);
     const response = await axios.post(`${ROBOT_SERVICE_URL}/robot/evento`, req.body, {
       headers: {
         'Content-Type': 'application/json',
@@ -27,6 +28,7 @@ router.post('/evento', async (req: Request, res: Response) => {
 
 router.get('/estado/:userId', async (req: Request, res: Response) => {
   try {
+    console.log(`Connecting to: ${ROBOT_SERVICE_URL}/robot/estado/${req.params.userId}`);
     const response = await axios.get(`${ROBOT_SERVICE_URL}/robot/estado/${req.params.userId}`, {
       headers: { Authorization: req.headers.authorization as string },
     });
@@ -39,6 +41,7 @@ router.get('/estado/:userId', async (req: Request, res: Response) => {
 
 router.get('/', async (req: Request, res: Response) => {
   try {
+    console.log(`Connecting to: ${ROBOT_SERVICE_URL}/robot`);
     const response = await axios.get(`${ROBOT_SERVICE_URL}/robot`, {
       headers: {
         Authorization: req.headers.authorization as string,
@@ -54,6 +57,7 @@ router.get('/', async (req: Request, res: Response) => {
 
 router.put('/', async (req: Request, res: Response) => {
   try {
+    console.log(`Connecting to: ${ROBOT_SERVICE_URL}/robot`);
     const response = await axios.put(`${ROBOT_SERVICE_URL}/robot`, req.body, {
       headers: {
         'Content-Type': 'application/json',

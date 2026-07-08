@@ -13,6 +13,7 @@ router.use(checkLevel(2));
 router.use(async (req: Request, res: Response) => {
   try {
     const targetUrl = `${GEO_SERVICE}${req.originalUrl}`;
+    console.log(`Connecting to: ${GEO_SERVICE}${req.originalUrl}`);
     const response = await axios({
       method: req.method as any,
       url: targetUrl,

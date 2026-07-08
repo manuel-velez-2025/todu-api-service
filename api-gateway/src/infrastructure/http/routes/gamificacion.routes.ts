@@ -11,6 +11,7 @@ router.use(authMiddleware);
 router.use(async (req: Request, res: Response) => {
   try {
     const targetUrl = `${GAMIFICATION_SERVICE}${req.originalUrl}`;
+    console.log(`Connecting to: ${GAMIFICATION_SERVICE}${req.originalUrl}`);
     const response = await axios({
       method: req.method as any,
       url: targetUrl,

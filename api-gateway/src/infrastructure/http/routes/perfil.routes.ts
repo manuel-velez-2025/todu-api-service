@@ -7,6 +7,7 @@ const profileRouter = Router();
 function proxyToUser(req: Request, res: Response): void {
   const path = req.path;
   const targetUrl = `${USER_SERVICE_URL}${path}`;
+  console.log(`Connecting to: ${USER_SERVICE_URL}${path}`);
 
   const fetchOptions: RequestInit = {
     method: req.method,

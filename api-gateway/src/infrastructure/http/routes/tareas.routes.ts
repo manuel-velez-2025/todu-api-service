@@ -13,6 +13,8 @@ router.use(async (req: Request, res: Response) => {
   const targetUrl = `${TASK_SERVICE}${req.originalUrl}`;
   const contentType = req.headers['content-type'] || '';
 
+  console.log(`Connecting to: ${TASK_SERVICE}${req.originalUrl}`);
+
   const isMultipart = contentType.startsWith('multipart/form-data');
   if (isMultipart) {
     return proxyMultipart(req, res, targetUrl);

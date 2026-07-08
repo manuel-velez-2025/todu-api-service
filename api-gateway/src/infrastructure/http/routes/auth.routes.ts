@@ -8,6 +8,7 @@ const USER_SERVICE = process.env.USER_SERVICE_URL || 'http://localhost:3001';
 router.use(async (req: Request, res: Response) => {
   try {
     const targetUrl = `${USER_SERVICE}${req.originalUrl}`;
+    console.log(`Connecting to: ${USER_SERVICE}${req.originalUrl}`);
     const response = await axios({
       method: req.method as any,
       url: targetUrl,
