@@ -7,4 +7,6 @@ RUN npm install
 
 COPY . .
 
-CMD ["npx", "tsx", "src/index.ts"]
+RUN npm run build
+
+CMD ["node", "dist/index.js"]
