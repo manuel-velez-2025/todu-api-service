@@ -40,7 +40,7 @@ app.use('/', inventoryRouter);
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`user-service corriendo en puerto ${PORT}`);
   console.log('Endpoints: /auth/*, /perfil*, /inventario*');
 });

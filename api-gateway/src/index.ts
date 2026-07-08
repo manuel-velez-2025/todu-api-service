@@ -58,7 +58,7 @@ app.get('/health', (_req, res) => {
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`api-gateway corriendo en puerto ${PORT}`);
 });
 

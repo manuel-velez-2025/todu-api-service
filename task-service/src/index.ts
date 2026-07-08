@@ -25,7 +25,7 @@ app.use('/tareas', taskRouter);
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3002;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`task-service corriendo en puerto ${PORT}`);
 });
 

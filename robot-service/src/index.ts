@@ -22,7 +22,7 @@ app.use('/robot', router);
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3004;
 
 testConnection().then(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`robot-service corriendo en puerto ${PORT}`);
   });
 });

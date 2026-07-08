@@ -28,7 +28,7 @@ app.use('/xp', xpRouter);
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3003;
 
 testConnection().then(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`gamification-service corriendo en puerto ${PORT}`);
     console.log('Endpoints: /gamificacion/xp, /xp/atomic, /xp/progreso/:userId');
   });

@@ -24,8 +24,8 @@ app.use('/geo', router);
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3005;
 
-app.listen(PORT, () => {
-  console.log(`geo-service corriendo en http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`geo-service corriendo en puerto ${PORT}`);
 });
 
 export default app;
